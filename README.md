@@ -1,8 +1,8 @@
-# RabidUI ☢️
+# RabidUI 
 
 A modular, multi-agent LLM frontend featuring advanced consensus systems and deep web-scraping capabilities.
 
-## 🚀 Key Features
+## Key Features
 
 - **Multi-Agent Consensus**: Orchestrate multiple local models (via Ollama) to collaborate or compete for the best answer.
 - **Fight to the Death ⚔️**: A brutal elimination arena where only the strongest response survives. Casulties are removed from the session roster!
@@ -11,7 +11,7 @@ A modular, multi-agent LLM frontend featuring advanced consensus systems and dee
 - **Contextual Search**: Uses LLMs to optimize your conversational queries into targeted search terms.
 - **Admin Control Tower**: Live hardware monitoring (GPU/VRAM) and scraper database inspector.
 
-## 🛠️ Setup
+##  Setup
 
 1. **Clone & Install**:
    ```bash
@@ -30,7 +30,7 @@ A modular, multi-agent LLM frontend featuring advanced consensus systems and dee
    streamlit run app.py
    ```
 
-## 🧠 System Requirements
+##  System Requirements
 
 - **Backend**: Requires [Ollama](https://ollama.ai/) and [SearXNG](https://github.com/searxng/searxng).
 - **GPU**: Optimized for NVIDIA RTX 3090 (24GB VRAM) for parallel model execution.
