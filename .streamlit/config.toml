@@ -1,0 +1,27 @@
+[server]
+port = 8501
+address = "0.0.0.0"
+headless = true
+
+# Required for Reverse Proxy stability
+enableCORS = false
+enableXsrfProtection = false
+enableWebsocketCompression = false
+enableStaticServing = true
+
+[browser]
+# REMOVED PORT 8501: Caddy handles the 443 -> 8501 jump
+serverAddress = "app.coleman-systems.com"
+# Setting port to 443 (or removing it) prevents URI mismatches
+serverPort = 443
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#d33682"
+backgroundColor = "#0e1117"
+secondaryBackgroundColor = "#1f2937"
+textColor = "#fafafa"
+font = "sans serif"
+
+[logger]
+level = "info"

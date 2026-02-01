@@ -1,0 +1,29 @@
+# Environments
+.env
+.venv/
+venv/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Databases
+*.db
+*.sqlite3
+
+# Project Specific
+data/
+user_data/
+backups/
+*.log
+workspaces.json
+cloudflared.deb
+
+# Streamlit
+.streamlit/secrets.toml
+
+# System
+.DS_Store
+CONTEXT_HANDOFF.md

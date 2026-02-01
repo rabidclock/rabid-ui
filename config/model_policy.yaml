@@ -1,0 +1,16 @@
+# RabidUI Model Filtering Policy
+
+# Patterns that are ALWAYS excluded from the Agent Squad pool
+forbidden_patterns:
+  - "vision"      # Grounding multimodal to save VRAM on the 3090
+  - "clip"        # Internal encoder models
+  - "moe-test"    # Unstable experimental models
+
+# Role-Based Whitelists
+roles:
+  admin:
+    - "*"         # Admins see everything not in the forbidden list
+  user:
+    - "gemma2:9b" # Stable combatants for guests
+    - "llama3.1:8b"
+    - "deepseek-coder:latest"

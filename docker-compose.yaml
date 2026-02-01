@@ -1,0 +1,21 @@
+services:
+  rabidllm:
+    build: .
+    container_name: rabidllm
+    user: root # Required to read /etc/shadow for PAM
+    runtime: nvidia
+    ports:
+      - "8501:8501"
+    environment:
+      - GITHUB_CLIENT_ID=your_id_here
+      - GITHUB_CLIENT_SECRET=your_secret_here
+      - REDIRECT_URI=http://rabidclock.ddns.net:8501
+      - OLLAMA_HOST=http://host.docker.internal:11434
+    volumes:
+      - /opt/rabid-ui/user_data:/app/user_data
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/shadow:/etc/shadow:ro # CRITICAL: This fixes the PAM Access Denied
+      - /etc/pam.d:/etc/pam.d:ro    # Bridges host-side PAM policies
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
