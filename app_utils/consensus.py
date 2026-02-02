@@ -50,26 +50,16 @@ def summarize_victory(winning_text, prompt, client, model):
 
 def run_decision_system(mode, response_data, prompt, client, judge_model=None, status_container=None):
     """
-    Orchestrates the selected consensus mode using the RTX 3090 bridge.
-    Returns: (final_text, source_label, deliberation_log, survivor_names)
+    Orchestrates the chosen consensus mode.
+    Returns: (final_text, source_model, logs, survivor_names)
     """
-    def log(msg):
-        log_entries.append(msg)
-        if status_container:
-            status_container.markdown(msg)
+    # 1. SHORT CIRCUIT: If only one model, no consensus needed
+    if len(response_data) == 1:
+        name = response_data[0]['name']
+        content = response_data[0]['content']
+        return content, name, [f"Single model '{name}' selected. Skipping consensus."], [name]
 
-    def update_status(label):
-        if status_container:
-            status_container.update(label=label, state="running")
-
-    log_entries = []
-    log(f"### 🏟️ Arena Initialized: {mode} Mode")
-    
-    # Default: Everyone survives unless the mode kills them
-    surviving_names = [r['name'] for r in response_data]
-    
-    # --- [MODE 1] FIGHT TO THE DEATH ---
-    if mode == "Fight to the Death":
+    if mode == "Fight to the Death (Arena)":
         hit_lists = {}
         update_status("📡 Targeting Phase...")
         log("📡 Agents are identifying targets and calculating trajectory...")

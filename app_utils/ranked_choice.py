@@ -47,6 +47,10 @@ def collect_ballot(agent_config, all_responses, user_query, client, options=None
     for r in all_responses:
         candidate_text += f"---\nNAME: {r['name']}\nRESPONSE: {r['content'][:800]}\n"
         
+    # Safe Example Names
+    ex1 = candidate_names[0] if len(candidate_names) > 0 else "Model A"
+    ex2 = candidate_names[1] if len(candidate_names) > 1 else "Model B"
+    
     prompt = f"""
     Evaluate the following Candidate Responses for this query: "{user_query}"
     CANDIDATES: {candidate_list_str}
@@ -59,7 +63,7 @@ def collect_ballot(agent_config, all_responses, user_query, client, options=None
     response is the most accurate.
     
     OUTPUT: Return ONLY a JSON list of names. No explanation.
-    Example: ["{candidate_names[0]}", "{candidate_names[1]}"]
+    Example: ["{ex1}", "{ex2}"]
     """
     
     try:
