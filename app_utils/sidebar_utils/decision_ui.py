@@ -11,7 +11,7 @@ def render(ws_config, available_models, is_locked, selected_ws_name):
     
     # 1. Consensus Mode Logic
     current_mode = ws_config.get("consensus_mode", "None")
-    mode_options = ["None", "Arbiter", "Ranked Choice", "Judge & Jury", "Fight to the Death"]
+    mode_options = ["None", "Arbiter", "Ranked Choice", "Judge & Jury", "The Retirement Lounge (Honorary)"]
     
     # Robust index mapping including legacy support
     idx = 0
@@ -20,6 +20,7 @@ def render(ws_config, available_models, is_locked, selected_ws_name):
     elif current_mode == "Judge Only": idx = 1
     elif current_mode == "Ranked Choice Only": idx = 2 
     elif current_mode == "Both": idx = 3 
+    elif current_mode == "Fight to the Death": idx = 4
         
     selected_mode = st.sidebar.selectbox("Consensus Mode", mode_options, index=idx, disabled=is_locked)
     
@@ -39,8 +40,8 @@ def render(ws_config, available_models, is_locked, selected_ws_name):
     judge_disabled = is_locked or (selected_mode in ["None", "Ranked Choice"])
     
     label = "Judge Model"
-    if selected_mode == "Fight to the Death": 
-        label = "Judge (for Ties/TPK)"
+    if selected_mode == "The Retirement Lounge (Honorary)": 
+        label = "Curator (for Ties/Archive)"
 
     selected_judge = st.sidebar.selectbox(label, judge_options, index=judge_idx, disabled=judge_disabled)
     

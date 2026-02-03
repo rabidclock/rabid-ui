@@ -1,27 +1,26 @@
 import streamlit as st
 import random
 import subprocess
-from app_utils import battle_royale, arena, ranked_choice
+from app_utils import retirement_lounge, arena, ranked_choice
 
-def execute_losers(losers_data, judge_model_tag):
+def retire_with_honors(losers_data, judge_model_tag):
     """
-    Simulates execution by logging the event. 
-    Actual model deletion is disabled to prevent accidental fleet wiping.
+    Simulates retirement by logging the event with dignity.
     """
-    execution_log = []
+    retirement_log = []
     for agent in losers_data:
         model_tag = agent['model']
         name = agent['name']
         
-        # Safety: Don't delete the Judge!
+        # Safety: The Judge stays on duty!
         if model_tag == judge_model_tag:
-            execution_log.append(f"🛡️ {name} ({model_tag}) was spared (Judge Immunity).")
+            retirement_log.append(f"🛡️ {name} ({model_tag}) remains active (Judge Immunity).")
             continue
 
-        # VIRTUAL EXECUTION ONLY
-        execution_log.append(f"💀 **ELIMINATED:** {name} ({model_tag}) has been removed from the active roster.")
+        # GRACEFUL RETIREMENT ONLY
+        retirement_log.append(f"🍵 **RETIRED:** {name} ({model_tag}) has been granted an honorary retirement.")
             
-    return execution_log
+    return retirement_log
 
 def summarize_victory(winning_text, prompt, client, model):
     """
@@ -59,29 +58,29 @@ def run_decision_system(mode, response_data, prompt, client, judge_model=None, s
         content = response_data[0]['content']
         return content, name, [f"Single model '{name}' selected. Skipping consensus."], [name]
 
-    if mode == "Fight to the Death (Arena)":
-        hit_lists = {}
-        update_status("📡 Targeting Phase...")
-        log("📡 Agents are identifying targets and calculating trajectory...")
+    if mode == "The Retirement Lounge (Honorary)":
+        retirement_lists = {}
+        update_status("🍵 Welcoming to the Lounge...")
+        log("🍵 Agents are reviewing their service and recognizing excellence...")
         
         candidate_names = [r['name'] for r in response_data]
         
-        # 1. Targeting Phase
+        # 1. Recognition Phase
         for agent in response_data:
-            update_status(f"📡 Targeting: {agent['name']}...")
-            targets = battle_royale.collect_hit_list(agent, response_data, prompt, client=client)
-            if targets: 
-                hit_lists[agent['name']] = targets
-                log(f"🎯 **{agent['name']}** locked onto targets: {', '.join(targets)}")
+            update_status(f"🍵 Reviewing: {agent['name']}...")
+            recommendations = retirement_lounge.collect_retirement_list(agent, response_data, prompt, client=client)
+            if recommendations: 
+                retirement_lists[agent['name']] = recommendations
+                log(f"📋 **{agent['name']}** recommended for retirement: {', '.join(recommendations)}")
         
-        # 2. Elimination Phase
-        update_status("⚔️ Fighting...")
-        results = battle_royale.run_elimination(hit_lists, candidate_names)
+        # 2. Selection Phase
+        update_status("🍵 Deliberating...")
+        results = retirement_lounge.run_retirement_selection(retirement_lists, candidate_names)
         arena.render_battle(candidate_names, results.get('logs', []), results.get('survivor'))
         
-        log("\n--- BATTLE LOG ---")
+        log("\n--- LOUNGE LOG ---")
         for l in results.get('logs', []):
-            log(f"🗡️ {l}")
+            log(f"🍵 {l}")
             
         survivor = results.get('survivor')
         finalists = results.get('finalists', [])
@@ -89,9 +88,9 @@ def run_decision_system(mode, response_data, prompt, client, judge_model=None, s
         winning_text = ""
         winner_name = ""
 
-        # 3. Determine Winner
-        if survivor and survivor != "No One (TPK)":
-            log(f"\n🏆 **VICTORY:** {survivor} is the last intelligence standing.")
+        # 3. Determine Representative
+        if survivor and survivor != "No One (All Retired)":
+            log(f"\n🏆 **HONORARY:** {survivor} remains to represent the collective intelligence.")
             winning_text = next((r['content'] for r in response_data if r['name'] == survivor), "Data Lost.")
             winner_name = survivor
             
@@ -99,14 +98,14 @@ def run_decision_system(mode, response_data, prompt, client, judge_model=None, s
             surviving_names = [survivor] 
             
         else:
-            # TOTAL PARTY KILL
-            log(f"\n💀 **TOTAL PARTY KILL.** All agents have been eliminated.")
+            # TOTAL RETIREMENT
+            log(f"\n🍵 **SHARED RETIREMENT.** All agents have entered the archive.")
             losers = response_data
             surviving_names = [] 
             
             if judge_model:
-                update_status(f"⚖️ Judge {judge_model} Deliberating...")
-                log(f"⚖️ **JUDGE {judge_model}** enters the arena to review the fallen...")
+                update_status(f"⚖️ Curator {judge_model} Synthesizing...")
+                log(f"⚖️ **CURATOR {judge_model}** enters the lounge to synthesize a final insight...")
                 
                 finalist_content = "\n\n".join([
                     f"AGENT {r['name']}:\n{r['content']}" 
@@ -114,9 +113,9 @@ def run_decision_system(mode, response_data, prompt, client, judge_model=None, s
                 ])
                 
                 judge_prompt = f"""
-                The debate arena has ended in a mutual kill. 
-                You are the NECROMANCER JUDGE. 
-                Review the final arguments from the fallen agents below and construct the BEST POSSIBLE ANSWER.
+                The retirement ceremony has concluded with a collective archive.
+                You are the MASTER CURATOR. 
+                Review the arguments from the honored agents below and construct the BEST POSSIBLE SUMMARY.
                 
                 USER PROMPT: {prompt}
                 
@@ -127,28 +126,28 @@ def run_decision_system(mode, response_data, prompt, client, judge_model=None, s
                 try:
                     res = client.chat(model=judge_model, messages=[{'role': 'user', 'content': judge_prompt}])
                     winning_text = res['message']['content']
-                    winner_name = f"Judge {judge_model} (Post-Mortem)"
-                    log(f"✅ Judge has reconstructed a solution from the finalists.")
+                    winner_name = f"Curator {judge_model} (Synthesis)"
+                    log(f"✅ Curator has synthesized a solution from the retirees.")
                 except Exception as e:
-                    winning_text = "Judgment failed."
-                    log(f"❌ Judge failed to answer: {e}")
+                    winning_text = "Synthesis failed."
+                    log(f"❌ Curator failed: {e}")
             else:
-                ex_logs = execute_losers(losers, judge_model)
+                ex_logs = retire_with_honors(losers, judge_model)
                 for l in ex_logs: log(l)
-                return "The arena is silent. No judge configured.", "Total Party Kill", "\n".join(log_entries), surviving_names
+                return "The lounge is quiet. No curator configured.", "Shared Retirement", "\n".join(log_entries), surviving_names
 
-        # 4. EXECUTION PHASE
-        update_status("💀 Executing Losers...")
-        log(f"\n⚖️ **EXECUTING LOSERS...**")
-        ex_logs = execute_losers(losers, judge_model)
+        # 4. HONORARY PHASE
+        update_status("🍵 Granting Retirement...")
+        log(f"\n⚖️ **HONORING RETIREES...**")
+        ex_logs = retire_with_honors(losers, judge_model)
         for l in ex_logs: log(l)
 
         # 5. Summarization
-        update_status("📝 Summarizing...")
-        log(f"\n📝 **SUMMARIZING VICTORY ({winner_name})...**")
-        summary_model = judge_model if "Judge" in winner_name else next((r['model'] for r in response_data if r['name'] == winner_name), judge_model)
+        update_status("📝 Synthesizing...")
+        log(f"\n📝 **FINAL SYNTHESIS ({winner_name})...**")
+        summary_model = judge_model if "Curator" in winner_name else next((r['model'] for r in response_data if r['name'] == winner_name), judge_model)
         final_summary = summarize_victory(winning_text, prompt, client, summary_model)
-        return final_summary, f"Winner: {winner_name}", "\n".join(log_entries), surviving_names
+        return final_summary, f"Represented by: {winner_name}", "\n".join(log_entries), surviving_names
 
     # --- [MODE 2] JUDGE & JURY (Hybrid with Mistrial Logic) ---
     if mode == "Judge & Jury" and judge_model:

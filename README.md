@@ -5,8 +5,8 @@ A modular, multi-agent LLM frontend featuring advanced consensus systems and dee
 ## Key Features
 
 - **Multi-Agent Consensus**: Orchestrate multiple local models (via Ollama) to collaborate or compete for the best answer.
-- **Fight to the Death ⚔️**: A brutal elimination arena where only the strongest response survives. Casulties are removed from the session roster!
-- **Judge & Jury ⚖️**: A democratic ranked-choice voting system with a Supreme Court Judge model for final overrides.
+- **The Retirement Lounge 🍵**: A graceful selection process where agents recognize excellence in their peers and recommend slightly less optimal responses for honorary retirement.
+- **Judge & Jury ⚖️**: A hybrid mode where the Jury (the models in your squad) votes on the best answer, and a Judge (your selected master model) either upholds or overturns the verdict. Includes mistrial logic and retrials.
 - **Smart Web Scraper 🕸️**: Powered by Playwright and Tesseract OCR. Bypasses common bot detection and extracts high-quality intelligence from the live web.
 - **Contextual Search**: Uses LLMs to optimize your conversational queries into targeted search terms.
 - **Admin Control Tower**: Live hardware monitoring (GPU/VRAM) and scraper database inspector.

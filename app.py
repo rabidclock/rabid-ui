@@ -247,11 +247,11 @@ if prompt := st.chat_input("Input command..."):
             final_text, source, logs, survivors = consensus.run_decision_system(config['consensus_mode'], response_data, prompt, client, config.get('judge_model'), status_container=status)
 
             # CONSTRUCT RICH HISTORY (Preserve Context for Reload)
-            history_text = f"### 🏆 VICTORY: {source}\n\n{final_text}\n\n"
+            history_text = f"### 🏆 REPRESENTED BY: {source}\n\n{final_text}\n\n"
             
-            # 1. Battle Logs
+            # 1. Lounge Records
             if logs:
-                history_text += f"\n<details>\n<summary>📜 Battle Logs</summary>\n\n{logs}\n</details>\n"
+                history_text += f"\n<details>\n<summary>📜 Lounge Records</summary>\n\n{logs}\n</details>\n"
             
             # 2. Agent Responses
             history_text += "\n<br><b>🕵️ Intelligence Reports</b>\n"
@@ -267,7 +267,7 @@ if prompt := st.chat_input("Input command..."):
             db.save_message(session_namespace, "Consensus", "assistant", history_text)
             st.session_state.messages.append({"role": "assistant", "content": history_text})
             
-            # 💀 HARD REMOVAL: Update Workspace Config
+            # 🍵 GRACEFUL REMOVAL: Update Workspace Config
             if survivors is not None:
                 current_models = config.get("models", [])
                 new_chain = [m for m in current_models if m.get('name') in survivors]
@@ -275,7 +275,7 @@ if prompt := st.chat_input("Input command..."):
                 if len(new_chain) < len(current_models):
                     from app_utils import workspaces
                     workspaces.update(user_key, current_ws, models=new_chain)
-                    st.toast("The fallen have been removed from the squad.", icon="💀")
+                    st.toast("The retirees have concluded their service and moved to the archive.", icon="🍵")
                     time.sleep(2) 
                     st.rerun()
         

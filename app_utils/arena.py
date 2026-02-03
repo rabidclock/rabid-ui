@@ -2,14 +2,14 @@ import streamlit as st
 import time
 import plotly.graph_objects as go
 
-def _get_arena_theme():
-    """Returns consistent color mapping for the Blood Red Arena theme."""
+def _get_lounge_theme():
+    """Returns consistent color mapping for the Mahogany Lounge theme."""
     return {
-        "alive": "#00ffcc",  # Neon Teal
-        "dead": "#8a0303",   # Blood Red
+        "active": "#a8e6cf",  # Seafoam Green
+        "retired": "#5d4037", # Mahogany Brown
         "background": "rgba(0,0,0,0)",
         "font": "white",
-        "swatch": ['#8a0303', '#ff4b4b', '#330000', '#5c0000', '#0e1117']
+        "swatch": ['#5d4037', '#8d6e63', '#3e2723', '#d7ccc8', '#0e1117']
     }
 
 def render_ranked_choice_rounds(round_tallies):
@@ -18,7 +18,7 @@ def render_ranked_choice_rounds(round_tallies):
         st.warning("⚠️ No voting data available for runoff visualization.")
         return
 
-    theme = _get_arena_theme()
+    theme = _get_lounge_theme()
     st.markdown("### 🗳️ Voting Runoff Analysis")
     
     cols = st.columns(len(round_tallies))
@@ -57,29 +57,29 @@ def render_ranked_choice_rounds(round_tallies):
             st.plotly_chart(fig, use_container_width=True, key=f"rc_round_{i}")
 
 def render_battle(candidate_names, logs, winner_name):
-    """Renders the animated Battle Royale arena status indicators."""
-    theme = _get_arena_theme()
+    """Renders the animated Retirement Lounge status indicators."""
+    theme = _get_lounge_theme()
     
     st.markdown("""
         <style>
-            .arena-container {
-                border: 2px solid #8a0303;
+            .lounge-container {
+                border: 2px solid #5d4037;
                 border-radius: 10px;
                 padding: 20px;
                 background-color: #0e1117;
-                box-shadow: 0 0 20px #8a0303;
+                box-shadow: 0 0 20px #5d4037;
             }
         </style>
     """, unsafe_allow_html=True)
 
-    with st.expander(f"⚔️ ARENA STATUS: {len(candidate_names)} COMBATANTS", expanded=True):
+    with st.expander(f"🍵 LOUNGE STATUS: {len(candidate_names)} MEMBERS", expanded=True):
         status_placeholder = st.empty()
-        agent_status = {name: "🟢 ALIVE" for name in candidate_names}
+        agent_status = {name: "🟢 ON DUTY" for name in candidate_names}
         
         def _draw_status_chart(status_dict):
             names = list(status_dict.keys())
-            health = [1 if "ALIVE" in s else 0.1 for s in status_dict.values()]
-            colors = [theme["alive"] if h == 1 else theme["dead"] for h in health]
+            health = [1 if "ON DUTY" in s else 0.4 for s in status_dict.values()]
+            colors = [theme["active"] if h == 1 else theme["retired"] for h in health]
 
             fig = go.Figure(go.Bar(
                 x=names,
@@ -104,15 +104,15 @@ def render_battle(candidate_names, logs, winner_name):
 
         _draw_status_chart(agent_status)
         st.divider()
-        st.caption("🩸 *Chronology of Betrayal*")
+        st.caption("🍵 *Service Recognition Log*")
         
         log_container = st.container(height=300) 
         for log_line in logs:
             time.sleep(1.2) 
-            round_victims = [name for name in candidate_names if name in log_line]
-            if round_victims:
-                for v in round_victims:
-                    agent_status[v] = "💀 ELIMINATED"
+            round_retirees = [name for name in candidate_names if name in log_line]
+            if round_retirees:
+                for v in round_retirees:
+                    agent_status[v] = "🍵 RETIRED"
                 _draw_status_chart(agent_status)
             
             with log_container:
@@ -120,6 +120,6 @@ def render_battle(candidate_names, logs, winner_name):
         
         st.divider()
         if winner_name and "No One" not in winner_name:
-            st.success(f"🏆 **VICTORY:** {winner_name} is the last intelligence standing.")
+            st.success(f"🏆 **HONORARY:** {winner_name} remains to represent the collective.")
         else:
-            st.error("☠️ **TOTAL PARTY KILL:** Mutual destruction confirmed.")
+            st.info("🍵 **SHARED RETIREMENT:** All members have gracefully entered the archive.")

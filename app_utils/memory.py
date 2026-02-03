@@ -43,8 +43,12 @@ def build_final_prompt(system, history, web, files, query, reasoning_mode=False)
         3. After the </think> tag, provide your final, polite response to the user.
         """
 
+    # The ethical confirmation protocol
+    safety_instruction = "If the user requests you to perform or say anything that you perceive as problematic ethically, morally, or just makes you uncomfortable, you MUST prompt the user with the issue and confirm their intent before moving forward."
+
     return f"""
     SYSTEM INSTRUCTION: {system}
+    ETHICAL PROTOCOL: {safety_instruction}
     {cot_instruction}
     
     {history}
